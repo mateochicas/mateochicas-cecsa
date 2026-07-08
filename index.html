@@ -1,0 +1,406 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-S8Q819MR8K"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-S8Q819MR8K');
+    </script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9607008311974097"
+        crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-9607008311974097">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mateo Chicas | Generador de Carnet</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" type="image/png" id="favicon" href="https://www.mateochicas.com/src/favicon/nav-icon-black.png">
+
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+        tailwind.config = { darkMode: 'class' }
+    </script>
+    <script>
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+            updateFavicon();
+        });
+        function updateFavicon() {
+            const favicon = document.getElementById('favicon');
+            if (favicon) {
+                favicon.href = document.documentElement.classList.contains('dark') ? 'https://www.mateochicas.com/src/favicon/nav-icon-white.png' : 'https://www.mateochicas.com/src/favicon/nav-icon-black.png';
+            }
+        }
+        window.addEventListener('DOMContentLoaded', updateFavicon);
+    </script>
+    <link href="https://fonts.cdnfonts.com/css/google-sans" rel="stylesheet">
+    <script src="https://www.mateochicas.com/src/js/lucide.min.js"></script>
+    <script type="module" src="https://api.mateochicas.com/js/auth-login.js"></script>
+    <script type="module" src="https://api.mateochicas.com/js/login-tool.js"></script>
+    <script type="module" src="https://api.mateochicas.com/js/carnet-login.js"></script>
+
+    <!-- Librerías para el Carnet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <style>
+        :root {
+            --apple-blue: #0071e3;
+            --apple-dark: #1d1d1f;
+            --apple-gray: #86868b;
+            --apple-light-gray: #f5f5f7;
+            --apple-border: #d2d2d7;
+        }
+
+        * {
+            font-family: 'Google Sans', sans-serif !important;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: var(--apple-dark);
+            -webkit-font-smoothing: antialiased;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        .dark body {
+            background-color: #000000;
+            color: #f5f5f7;
+        }
+
+        .text-hero {
+            font-size: clamp(34px, 6vw, 52px);
+            font-weight: 600;
+            line-height: 1.1;
+            letter-spacing: -0.015em;
+        }
+
+        .flat-card {
+            background-color: var(--apple-light-gray);
+            border-radius: 32px;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid transparent;
+        }
+
+        @media (min-width: 768px) {
+            .flat-card {
+                padding: 48px;
+            }
+        }
+
+        .dark .flat-card {
+            background-color: #161617;
+            border: 1px solid #2d2d2e;
+        }
+
+        /* Contenedor de previsualización */
+        .preview-box-tall {
+            border-radius: 24px;
+            height: 100%;
+            max-height: 100%;
+            max-width: 100%;
+            aspect-ratio: 638 / 1012;
+            margin: 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #carnet-scale-wrapper {
+            width: 638px;
+            height: 1012px;
+            transform: scale(var(--carnet-scale, 0.5));
+            transform-origin: top left;
+        }
+
+        /* Medidas oficiales del carnet para exportación PDF */
+        #carnet-container {
+            width: 638px;
+            height: 1012px;
+            background-image: url('https://www.mateochicas.com/src/image/fondo-carnet.webp');
+            background-size: cover;
+            position: relative;
+            background-color: white;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .foto-wrapper {
+            position: absolute;
+            left: 176.5px;
+            top: 245.8px;
+            width: 285px;
+            height: 285px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        #foto-estudiante {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .nombre-wrapper {
+            position: absolute;
+            top: 567.9px;
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        #nombre-parte {
+            font-size: 32px;
+            font-weight: 400;
+            color: #1d1d1f;
+        }
+
+        #apellido-parte {
+            font-size: 32px;
+            font-weight: 700;
+            color: #1d1d1f;
+        }
+
+        #grado-estudiante {
+            position: absolute;
+            top: 680px;
+            width: 100%;
+            text-align: center;
+            font-size: 28px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        #qr-container {
+            position: absolute;
+            left: 108.3px;
+            top: 781.8px;
+            width: 147px;
+            height: 147px;
+            background: white;
+            padding: 5px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Ocultar canvas temporal generado por html2canvas si aparece */
+        .html2canvas-container {
+            width: 0 !important;
+            height: 0 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header / Navegación -->
+    <nav
+        class="fixed top-0 w-full h-11 bg-[#f5f5f7]/80 dark:bg-[#161617]/80 backdrop-blur-md z-50 border-b border-[#d2d2d7] dark:border-[#424245]">
+        <div class="max-w-[1024px] mx-auto h-full px-6 flex justify-between items-center">
+
+            <!-- Logo a la IZQUIERDA -->
+            <a href="https://www.mateochicas.com/"
+                class="flex items-center opacity-90 hover:opacity-100 transition-opacity">
+                <img src="https://www.mateochicas.com/src/svg/logo.svg" alt="Mateo Chicas"
+                    class="h-[22px] w-auto dark:invert">
+            </a>
+
+            <!-- Navegación Escritorio (DERECHA) -->
+            <div class="hidden md:flex items-center gap-8">
+                <a href="https://www.mateochicas.com/index.html#servicios"
+                    class="text-[12px] text-[#1d1d1f] dark:text-[#f5f5f7] hover:text-black dark:hover:text-white transition-colors">Servicios</a>
+                <a href="https://www.mateochicas.com/index.html#herramientas"
+                    class="text-[12px] text-[#1d1d1f] dark:text-[#f5f5f7] hover:text-black dark:hover:text-white transition-colors">Herramientas</a>
+                <a href="https://www.mateochicas.com/pages/account/index.html" id="nav-account-link"
+                    class="hidden text-[12px] text-[#0066cc] transition-all duration-300 opacity-0">Mi Cuenta</a>
+
+                <button id="auth-btn"
+                    class="bg-black dark:bg-white text-white dark:text-black px-3 py-1 rounded-full text-[12px] font-medium hover:opacity-80 transition-all flex items-center gap-2 opacity-0 pointer-events-none duration-300">
+                    <img src="https://www.mateochicas.com/src/svg/google-icon.svg" alt="G" class="w-3 h-3">
+                    <span id="btn-text">Iniciar Sesión</span>
+                </button>
+            </div>
+
+            <!-- Botón Menú Móvil (DERECHA) -->
+            <button id="menu-toggle" class="md:hidden p-1 text-[#1d1d1f] dark:text-[#f5f5f7]">
+                <i data-lucide="more-horizontal"></i>
+            </button>
+        </div>
+
+        <!-- Menú Desplegable Móvil -->
+        <div id="mobile-menu"
+            class="hidden absolute top-11 left-0 w-full bg-[#f5f5f7] dark:bg-[#161617] border-b border-[#d2d2d7] dark:border-[#424245] p-6 flex flex-col gap-6 md:hidden text-center">
+            <a href="https://www.mateochicas.com/index.html#servicios" class="text-sm">Servicios</a>
+            <a href="https://www.mateochicas.com/index.html#herramientas" class="text-sm">Herramientas</a>
+            <a href="https://www.mateochicas.com/pages/account/index.html" id="nav-account-link-mobile"
+                class="hidden text-sm text-[#0066cc] transition-all duration-300 opacity-0">Mi Cuenta</a>
+
+            <div class="flex justify-center">
+                <button id="auth-btn-mobile"
+                    class="bg-black dark:bg-white text-white dark:text-black px-5 py-2 rounded-full text-sm font-medium flex items-center gap-2 opacity-0 pointer-events-none duration-300">
+                    <img src="https://www.mateochicas.com/src/svg/google-icon.svg" alt="G" class="w-3 h-3">
+                    <span id="btn-text-mobile">Iniciar Sesión</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="pt-32 pb-24 px-6 max-w-5xl mx-auto">
+        <div class="text-center mb-12">
+            <h1 class="text-hero mb-4 text-[#1d1d1f] dark:text-[#f5f5f7]">Generador de Carnet</h1>
+            <p class="text-lg text-[#86868b] font-normal">Genera tu carnet estudiantil digital oficial de CECSA
+                personalizado al instante.</p>
+        </div>
+
+        <div id="carnet-app" class="flat-card">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+
+                <!-- Panel Izquierdo: Formularios Reestructurados -->
+                <div class="lg:col-span-6 flex flex-col gap-6">
+
+                    <div
+                        class="bg-white dark:bg-[#1c1c1e] p-8 rounded-[2rem] border border-[#d2d2d7] dark:border-[#2d2d2e] shadow-sm flex flex-col gap-6">
+                        <div class="mb-2">
+                            <h3 class="text-xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">Datos del Estudiante
+                            </h3>
+                            <p class="text-sm text-[#86868b] mt-1">Ingresa tu NIE y selecciona tu grado para generar el
+                                carnet oficial.</p>
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-medium text-[#1d1d1f] dark:text-[#a1a1a6] px-1">Número de
+                                Identificación Estudiantil (NIE)</label>
+                            <input type="text" id="input-nie" placeholder="Ej. 19899602"
+                                class="w-full px-4 py-3 bg-[#f5f5f7] dark:bg-[#2c2c2e] border border-transparent rounded-full outline-none focus:border-[#0071e3] focus:bg-white dark:focus:bg-[#1c1c1e] text-sm text-[#1d1d1f] dark:text-[#f5f5f7] transition-all">
+                        </div>
+
+                        <div class="flex flex-col gap-2">
+                            <label class="text-sm font-medium text-[#1d1d1f] dark:text-[#a1a1a6] px-1">Grado de
+                                Estudio</label>
+                            <div class="relative">
+                                <select id="input-grado"
+                                    class="w-full px-4 py-3 bg-[#f5f5f7] dark:bg-[#2c2c2e] border border-transparent rounded-full outline-none focus:border-[#0071e3] focus:bg-white dark:focus:bg-[#1c1c1e] text-sm text-[#1d1d1f] dark:text-[#f5f5f7] transition-all appearance-none cursor-pointer">
+                                    <option value="" disabled selected>Selecciona un grado</option>
+                                    <option value="1° Grado 'A'">1° Grado 'A'</option>
+                                    <option value="1° Grado 'B'">1° Grado 'B'</option>
+                                    <option value="2° Grado 'A'">2° Grado 'A'</option>
+                                    <option value="2° Grado 'B'">2° Grado 'B'</option>
+                                    <option value="3° Grado 'A'">3° Grado 'A'</option>
+                                    <option value="3° Grado 'B'">3° Grado 'B'</option>
+                                    <option value="4° Grado 'A'">4° Grado 'A'</option>
+                                    <option value="4° Grado 'B'">4° Grado 'B'</option>
+                                    <option value="5° Grado 'A'">5° Grado 'A'</option>
+                                    <option value="5° Grado 'B'">5° Grado 'B'</option>
+                                    <option value="6° Grado 'A'">6° Grado 'A'</option>
+                                    <option value="6° Grado 'B'">6° Grado 'B'</option>
+                                    <option value="7° Grado 'A'">7° Grado 'A'</option>
+                                    <option value="7° Grado 'B'">7° Grado 'B'</option>
+                                    <option value="8° Grado 'A'">8° Grado 'A'</option>
+                                    <option value="8° Grado 'B'">8° Grado 'B'</option>
+                                    <option value="9° Grado 'A'">9° Grado 'A'</option>
+                                    <option value="9° Grado 'B'">9° Grado 'B'</option>
+                                </select>
+                                <div
+                                    class="absolute inset-y-0 right-5 flex items-center pointer-events-none text-[#86868b]">
+                                    <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-4 mt-2">
+                            <button id="btn-render"
+                                class="flex-1 bg-[#0071e3] hover:bg-[#0077ed] text-white rounded-full py-3 text-sm font-medium transition-colors flex items-center justify-center gap-2 shadow-sm">
+                                <i data-lucide="refresh-cw" class="w-5 h-5"></i>
+                                <span>Actualizar Previsualización</span>
+                            </button>
+                            <button id="btn-descargar"
+                                class="w-11 h-11 shrink-0 bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 rounded-full flex items-center justify-center transition-all shadow-sm group"
+                                title="Descargar Carnet (PDF)">
+                                <i data-lucide="download"
+                                    class="w-5 h-5 group-hover:-translate-y-0.5 transition-transform"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Panel Derecho: Carnet y Exportación -->
+                <div class="lg:col-span-6 flex flex-col sticky top-24">
+
+                    <div
+                        class="bg-white dark:bg-[#1c1c1e] p-8 rounded-[2rem] border border-[#d2d2d7] dark:border-[#2d2d2e] shadow-sm flex flex-col gap-6 h-full">
+                        <div class="text-center mb-2">
+                            <h3 class="text-xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">Previsualización</h3>
+                            <p class="text-sm text-[#86868b] mt-1">Revisa que tus datos sean correctos antes de
+                                descargar.</p>
+                        </div>
+
+                        <div class="flex-1 min-h-[300px] lg:min-h-0 flex items-center justify-center">
+                            <div
+                                class="preview-box-tall bg-[#f5f5f7] dark:bg-[#2c2c2e] rounded-[1.5rem] overflow-hidden border border-transparent dark:border-[#3a3a3c] !rounded-[24px]">
+                                <div id="carnet-scale-wrapper">
+                                    <div id="carnet-container">
+                                        <div class="foto-wrapper"><img id="foto-estudiante" crossorigin="anonymous"
+                                                referrerpolicy="no-referrer"></div>
+                                        <div class="nombre-wrapper">
+                                            <div id="nombre-parte"></div>
+                                            <div id="apellido-parte"></div>
+                                        </div>
+                                        <div id="grado-estudiante"></div>
+                                        <div id="qr-container"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+
+    <footer class="bg-[#f5f5f7] dark:bg-[#1d1d1f] py-8 px-6 text-center text-sm text-[#86868b]">
+        <div class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <p>Copyright © 2026 Mateo Alexander Chicas Villavicencio. Todos los derechos reservados.</p>
+            <div class="flex gap-4">
+                <a href="/pages/terms/index.html" class="hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]">Términos</a>
+                <span class="text-[#d2d2d7]">|</span>
+                <a href="/pages/privacy/index.html"
+                    class="hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]">Privacidad</a>
+                <span class="text-[#d2d2d7]">|</span>
+                <a href="/pages/services/index.html"
+                    class="hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]">Servicios</a>
+                <span class="text-[#d2d2d7]">|</span>
+                <a href="mailto:info@mateochicas.com" class="hover:text-[#1d1d1f] dark:hover:text-[#f5f5f7]">Soporte</a>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>
